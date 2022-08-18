@@ -1,10 +1,16 @@
 ---
-- name: lab
+- name: lab1
   box: debian/buster64
   hostname: laboratorio
   ipaddress: 172.16.1.110
-  memory: 3584
+  memory: 2048
   cpus: 2
-  provision: provision/ansible/requirements.yml
+  provision: provision/ansible/requirements-lab1.yml
 
-
+- name: lab2
+  box: debian/buster64
+  hostname: laboratorio
+  ipaddress: 172.16.1.111
+  memory: 1024
+  cpus: 1
+  provision: provision/ansible/requirements-lab2.yml

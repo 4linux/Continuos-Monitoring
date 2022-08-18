@@ -37,6 +37,12 @@ services:
       - 3000:3000
     depends_on:
       - prometheus
+  
+  blackbox-exporter:
+    image: bitnami/blackbox-exporter:latest
+    container_name: blackbox_exporter
+    ports:
+      - 9115:9115
 
 volumes:
   grafana-storage:

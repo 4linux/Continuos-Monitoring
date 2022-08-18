@@ -1,0 +1,93 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: Adiciona usuario suporte
+      user:
+        name: suporte
+        shell: /bin/bash
+        password : $1$QbUARykG$p2nthVG8AkDvabKPHwboa1
+        
+    - name: Instala pacotes que permitem que o apt seja usado sobre HTTPS
+      apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+        - default-mysql-client
+        - nfs-common
+        - snapd
+        - git
+        - vim
+
+    - name: Adiciona uma chave de assinatura apt para o Docker
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Adiciona repositorio apt para versao estavel
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+        state: present
+
+    - name: Instala o Docker e suas dependencias
+      apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-compose-plugin
+        - docker-compose
+      notify:
+        - docker status
+
+    - name: Cria o diretorio docker.service.d
+      file:
+        path: /etc/systemd/system/docker.service.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Copia o arquivo daemon.json para o host
+      copy:
+        src: files/daemon.json
+        dest: /etc/docker/daemon.json
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Reinicia o Docker
+      service:
+        name: docker
+        daemon_reload: yes
+        state: restarted
+
+    - name: Remove swap do arquivo /etc/fstab
+      mount:
+        name: "{{ item }}"
+        fstype: swap
+        state: absent
+      with_items:
+        - swap
+        - none
+
+    - name: Desativa o swap
+      command: swapoff -a
+      when: ansible_swaptotal_mb > 0
+
+  handlers:
+    - name: docker status
+      service: name=docker state=started
