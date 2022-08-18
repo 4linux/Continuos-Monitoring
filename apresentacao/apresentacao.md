@@ -175,7 +175,9 @@ O Grafana permite consultar, visualizar, alertar e explorar suas métricas, logs
 # Vamos ao Laboratório!
 
 Siga-me os bons!
-![w:480px center](imagens/wellguides_running-jumbo-v2.gif)
+
+
+![w:480px center](https://user-images.githubusercontent.com/7303609/185504821-0ab38e5f-b032-49bc-bb6b-62e30331f13b.mov)
 
 ---
 <style scoped>
