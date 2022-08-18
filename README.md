@@ -1,4 +1,4 @@
-# Laboratório para Docker
+# Laboratório para estudos
 
 ### **Pré-requisitos:**
 
